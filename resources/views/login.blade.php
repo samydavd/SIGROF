@@ -5,17 +5,17 @@
     <meta charset="utf-8" name="viewport" content="width=device-width, initial-scale=1">
     <title>SIGROF PLUS</title>
 
-    <script src="js/jquery-1.11.0.min.js"></script>
+    <script src="js/jquery-3.2.1.min.js"></script>
     <script src="js/sweetalert.min.js"></script>
 
     <!-- Google Fonts Enlace Pendiente-->
-    <link href='https://fonts.googleapis.com/css?family=Roboto+Slab:400,100,300,700|Lato:400,100,300,700,900' rel='stylesheet' type='text/css'> 
+    <link rel="stylesheet" href="css/font_google.css">
 
     <!-- Custom Stylesheet -->
     <link rel="stylesheet" href="css/style.css">
 
     <!-- Other Stylesheet -->
-    <link rel="stylesheet" href="vendor/bootstrap/dist/css/bootstrap.min.css">  
+    <link rel="stylesheet" href="vendor/bootstrap/dist/css/bootstrap.min.css">
 
 </head>
 
@@ -35,7 +35,7 @@
         </div>
         <div class="login-box">
             <div class="box-header">
-                <h3>LOG IN</h3>
+                <h4>LOG IN</h4>
             </div>
             <form method="POST" action="{{ route('validar_sesion')}}">
                 {{ csrf_field() }}
@@ -44,10 +44,11 @@
                     <i class="glyphicon glyphicon-user" aria-hidden="true"></i>
                 </div>
                 <div class="inputWithIcon inputIconBg">
-                    <input type="password" name="clave" id="clave" placeholder="Contraseña" required>
+                    <input type="password" name="clave" id="clave" placeholder="Contraseña" data-toggle="password" required>
                     <i class="glyphicon glyphicon-lock" aria-hidden="true"></i>
                 </div>
-                <button type="submit">Iniciar sesión</button>
+                <!--input type="checkbox" onclick="myFunction()" placeholder="Show Password"-->
+                <button type="submit"><i class="glyphicon glyphicon-off" aria-hidden="true"></i> Iniciar sesión</button>
             </form>
             <br/>
             <a href="#"><p class="small">Olvide mi contraseña</p></a>
@@ -60,6 +61,16 @@
         $('#logo').addClass('animated fadeInDown');
         $("input:text:visible:first").focus();
     });
+
+    /*function myFunction() {
+    var x = document.getElementById("clave");
+    if (x.type === "password") {
+        x.type = "text";
+    } else {
+        x.type = "password";
+    }
+}*/
+</script>
 </script>
 
 </html>

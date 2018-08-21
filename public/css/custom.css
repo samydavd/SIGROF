@@ -1,0 +1,16 @@
+body {	
+	---background: url("../images/imagen2.png") no-repeat center center fixed;
+	background: #EEEEEE;
+	-webkit-background-size: cover;
+  	-moz-background-size: cover;
+  	-o-background-size: cover;
+  	background-size: cover;
+	z-index: 0;
+	
+}
+
+@media only screen and (max-width: 767px) {
+
+body {
+	background-image: url("../images/imagen2.png");
+}

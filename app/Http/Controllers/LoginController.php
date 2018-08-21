@@ -6,6 +6,9 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
 use App\Http\Requests;
 use App\Usuario;
+use App\Departamento;
+use App\Mapa;
+use App\Empresa;
 use Auth;
 use Session;
 
@@ -23,8 +26,9 @@ class LoginController extends Controller
         if (session("usuario"))
         {
             //return Redirect::to('iniciar');
-            Session::flush();
-            dump(Session::all());
+            return Redirect('principal');
+            //flush(session());
+            //dump(Session::all());
             //session(['nombre' => null]);
             
         }
@@ -38,37 +42,61 @@ class LoginController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function iniciar()
     {
         return "Entrando";
     }
 
     public function validar_sesion(Request $request){
-        //dd($request->all());
+        $usu = new Usuario();
+        $verificar = $usu->existe($request->usuario);
 
-        $usuario = Usuario::where('usuario', $request->input("usuario"))
-                          ->where('clave', md5($request->input("clave")))
-                          ->where('activo', 1)->first();
+        if(count($verificar)){
+            if($verificar->clave == null) $usu->clave($request->usuario, md5($request->clave));
+            $usuario = $usu->verificar_datos($request->usuario, md5($request->clave));
+        }
+        else
+            $usuario = null;
 
         if(count($usuario)){
+            //setlocale(LC_TIME, 'es_VE'); # Localiza en español es_Venezuela
+            //date_default_timezone_set('America/Caracas');
+
+            $departamento = Departamento::find($usuario->departamento);
+            $empresa = Empresa::find($departamento->empresa);
+
+            if(isset($departamento)){
+                $id_dep = $departamento->id;
+                $nombre_dep = $departamento->nombre_dep;
+                $tipo_dep = $departamento->tipo_dep;
+            }
+            else {
+                $id_dep = -1;
+                $nombre_dep = null;
+                $tipo_dep = 'NA';
+            }
+
+            $mapa = Mapa::especifico($usuario['mapa_acceso']);
+
             session(['id_usuario' => $usuario->id_usuario,
                      'nombre' => $usuario->nombre,
                      'iniciales' => $usuario->iniciales,
                      'usuario' => $usuario->usuario,
                      'nivel' => $usuario->nivel,
-                     'empresa' => $usuario->empresa,
-                     'departamento' => $usuario->departamento,
+                     'correo' => $usuario->correo,
+                     'empresa' => $empresa->id_empresa,
+                     'id_dep' => $id_dep,
+                     'departamento' => $nombre_dep,
+                     'tipo_dep' => $tipo_dep,
                     //['mapa_acceso' => $usuario->mapa_acceso],
-                     'clave' => $usuario->clave]);
+                     'clave' => $usuario->clave,
+                     'acceso' => $mapa]);
                     //['preferencias' => $usuario->preferencias]
-            dump(Session::all());
-
-            echo "bienvenido";
             session::save();
+            return Redirect()->route('/');
         }
         else
             return Redirect::back()->with('data', 'Invalid data');
-        //echo $request->input("nombre");
     }
 
 
@@ -109,5 +137,10 @@ class LoginController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    public function cerrar_sesion(){
+        Session::flush();
+        return Redirect()->route('/');
     }
 }
